@@ -51,7 +51,7 @@ class ProcessarIptuDamUseCase
                 'margin_top' => 12,
                 'margin_bottom' => 14,
                 'margin_header' => 9,
-                'margin_footer' => 9
+                'margin_footer' => 9,
             ]
         );
 
