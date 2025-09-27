@@ -10,9 +10,9 @@ class Mpdf implements ContratoPdfGerador
 {
     private LaravelMpdfType $pdf;
 
-    public function gerarPdf(string $caminhoView, array $dados): string
+    public function gerarPdf(string $caminhoView, array $dados, array $options): string
     {
-        $this->pdf = LaravelMpdf::loadView($caminhoView, $dados);
+        $this->pdf = LaravelMpdf::loadView($caminhoView, $dados, $options);
 
         return $this->pdf->output();
     }

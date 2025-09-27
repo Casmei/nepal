@@ -4,5 +4,5 @@ namespace App\Modules\Contracts;
 
 interface ContratoPdfGerador
 {
-    public function gerarPdf(string $caminhoView, array $dados): string;
+    public function gerarPdf(string $caminhoView, array $dados, array $options): string;
 }

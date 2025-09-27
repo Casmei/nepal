@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Services;
+namespace App\Services;
 
 use App\Modules\Contracts\ContratoArmazenamento;
 use Illuminate\Support\Facades\Storage;
