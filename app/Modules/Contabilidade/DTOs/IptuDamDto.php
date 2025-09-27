@@ -20,8 +20,9 @@ class IptuDamDto
         public string $multa,
         public string $mora,
         public ?int $iptu_calculo_rotina_id,
-        public string $instrucao_pagamento,
-        public ?string $pix_qr_code
+        public ?string $instrucao_pagamento,
+        public ?string $pix_qr_code,
+        public ?string $caminho_carne_pdf
     ) {}
 
     public static function from(object $data): self
@@ -43,7 +44,8 @@ class IptuDamDto
             $data->mora,
             $data->iptu_calculo_rotina_id,
             $data->instrucao_pagamento,
-            $data->pix_qr_code
+            $data->pix_qr_code,
+            $data->caminho_carne_pdf
         );
     }
 }
