@@ -13,14 +13,13 @@ class VisualizarIptuDamPdfUseCase
         private ContratoTributarioIptuDamRepository $repository,
         private ContratoPdfGerador $documentoGerador,
         private ContratoArmazenamento $armazenamento,
-    ) {
-    }
+    ) {}
 
     public function execute(int $iptuDamId): string
     {
         $iptuDam = $this->repository->findOneById($iptuDamId);
 
-        if (!$iptuDam) {
+        if (! $iptuDam) {
             throw new DomainException("IPTU DAM com ID {$iptuDamId} não encontrado.");
         }
 

@@ -49,7 +49,7 @@ class TributarioIptuDamRepository implements ContratoTributarioIptuDamRepository
     {
         $row = DB::table('tributario_iptu_calculo_dam')->find($iptuDamId);
 
-        if (!$row) {
+        if (! $row) {
             return null;
         }
 

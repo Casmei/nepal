@@ -17,14 +17,13 @@ class ProcessarIptuDamUseCase
         private ContratoPdfGerador $documentoGerador,
         private ContratoArmazenamento $armazenamento,
 
-    ) {
-    }
+    ) {}
 
     public function execute(int $iptuDamId): void
     {
         $iptuDam = $this->repository->findOneById($iptuDamId);
 
-        if (!$iptuDam) {
+        if (! $iptuDam) {
             throw new DomainException("IPTU DAM com ID {$iptuDamId} não encontrado.");
         }
 
