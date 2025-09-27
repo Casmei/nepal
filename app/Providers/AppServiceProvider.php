@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
         // USE CASES
         $this->app->bind(
             ProcessarIptuDamLoteUseCase::class,
-            fn($app) => new ProcessarIptuDamLoteUseCase(
+            fn ($app) => new ProcessarIptuDamLoteUseCase(
                 $app->make(TributarioIptuDamRepository::class)
             )
 
@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             ProcessarIptuDamUseCase::class,
-            fn($app) => new ProcessarIptuDamUseCase(
+            fn ($app) => new ProcessarIptuDamUseCase(
                 $app->make(TributarioIptuDamRepository::class),
                 $app->make(BancoDoBrasilGateway::class),
                 $app->make(Mpdf::class),
@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             VisualizarIptuDamPdfUseCase::class,
-            fn($app) => new VisualizarIptuDamPdfUseCase(
+            fn ($app) => new VisualizarIptuDamPdfUseCase(
                 $app->make(TributarioIptuDamRepository::class),
                 $app->make(Mpdf::class),
                 $app->make(LaravelStorageService::class),

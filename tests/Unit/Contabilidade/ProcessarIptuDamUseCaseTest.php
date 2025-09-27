@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\Contabilidade;
 
-use PHPUnit\Framework\TestCase;
 use App\Modules\Contabilidade\UseCases\ProcessarIptuDamUseCase;
+use App\Modules\Contracts\ContratoArmazenamento;
 use App\Modules\Contracts\ContratoPagamentoGateway;
 use App\Modules\Contracts\ContratoPdfGerador;
-use App\Modules\Contracts\ContratoArmazenamento;
-use Test;
-use Tests\Fakes\TributarioIptuDamRepositoryFake;
-use Tests\Factories\IptuDamDtoFactory;
 use DomainException;
+use PHPUnit\Framework\TestCase;
+use Test;
+use Tests\Factories\IptuDamDtoFactory;
+use Tests\Fakes\TributarioIptuDamRepositoryFake;
 
 class ProcessarIptuDamUseCaseTest extends TestCase
 {
@@ -24,7 +24,7 @@ class ProcessarIptuDamUseCaseTest extends TestCase
     {
         parent::setUp();
 
-        $this->repository = new TributarioIptuDamRepositoryFake();
+        $this->repository = new TributarioIptuDamRepositoryFake;
         $this->pagamentoGateway = $this->createMock(ContratoPagamentoGateway::class);
         $this->documentoGerador = $this->createMock(ContratoPdfGerador::class);
         $this->armazenamento = $this->createMock(ContratoArmazenamento::class);
@@ -37,8 +37,11 @@ class ProcessarIptuDamUseCaseTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     */
     #[Test]
-    public function testDeveGerarPixEPdfQuandoIptuExiste(): void
+    public function deve_gerar_pix_e_pdf_quando_iptu_existe(): void
     {
         $dto = IptuDamDtoFactory::make(['id' => 1, 'valor' => '150.00']);
 
@@ -70,8 +73,11 @@ class ProcessarIptuDamUseCaseTest extends TestCase
         $this->assertEquals('pdf/iptu/dam/iptu_dam_1.pdf', $iptuAtualizado->caminho_carne_pdf);
     }
 
+    /**
+     * @test
+     */
     #[Test]
-    public function testDeveLancarExcecaoQuandoIptuNaoExiste(): void
+    public function deve_lancar_excecao_quando_iptu_nao_existe(): void
     {
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('IPTU DAM com ID 999 não encontrado.');
