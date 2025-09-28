@@ -7,8 +7,8 @@ use App\Modules\Contabilidade\Repositories\Contratos\ContratoTributarioIptuDamRe
 use App\Modules\Contracts\ContratoArmazenamento;
 use App\Modules\Contracts\ContratoPagamentoGateway;
 use App\Modules\Contracts\ContratoPdfGerador;
-use App\Modules\Contracts\GerarCobrancaPixComVencimentoDto;
-use App\Modules\Contracts\PagamentoGatewayConfigDto;
+use App\Modules\Contracts\DTOs\PagamentoGatewayConfigDto;
+use App\Modules\Contracts\DTOs\GerarCobrancaPixComVencimentoDto;
 use App\Modules\Gestora\DTOs\GestoraInfoBancariaDto;
 use App\Modules\Gestora\Repositories\Contratos\ContratoGestoraInfoBancariaRepository;
 use DomainException;
@@ -30,7 +30,6 @@ class ProcessarIptuDamUseCase
     {
         // todo: Esse gestora id deve ser pego do JWT enviado na requisição do Sigafi para o Nepal
         $gestoraId = 54;
-        Log::info('Iniciando processamento do IPTU DAM', ['iptuDamId' => $iptuDamId]);
         $iptuDam = $this->iptuDamRepository->findOneById($iptuDamId);
         $gestoraInfoBancarias = $this->gestoraInfoBancariaRepository->findOneByGestoraId($gestoraId);
 
@@ -42,11 +41,7 @@ class ProcessarIptuDamUseCase
         // todo: melhorar essas atualizações, pois são duas conexões ao banco para atualizar a mesma entidade;
         try {
             $this->gerarPixQrcode($iptuDam, $gestoraInfoBancarias);
-            Log::info('Pix QR Code gerado com sucesso', ['iptuDamId' => $iptuDamId]);
-
             $this->gerarPdfCarneDePagamento($iptuDam);
-            Log::info('PDF do carnê gerado com sucesso', ['iptuDamId' => $iptuDamId]);
-
         } catch (Throwable $e) {
             Log::error('Erro ao processar IPTU DAM', [
                 'iptuDamId' => $iptuDamId,
@@ -55,8 +50,6 @@ class ProcessarIptuDamUseCase
             ]);
             throw $e; // opcional, se quiser propagar
         }
-
-        Log::info('Processamento do IPTU DAM finalizado', ['iptuDamId' => $iptuDamId]);
     }
 
     private function gerarPdfCarneDePagamento(IptuDamDto $IptuDamDto): void
