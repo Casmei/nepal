@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Modules\Contabilidade\Repositories\TributarioIptuDamRepository;
 use App\Modules\Contabilidade\UseCases\ProcessarIptuDamUseCase;
 use App\Modules\Contabilidade\UseCases\VisualizarIptuDamPdfUseCase;
-use App\Modules\Contracts\ContratoArmazenamento;
+use App\Modules\Gestora\Repositories\GestoraInfoBancariaRepository;
 use App\Services\BancoDoBrasilGateway;
 use App\Services\LaravelStorageService;
 use App\Services\Mpdf;
@@ -18,14 +18,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // REPOSITORIES
-        $this->app->bind(ContratoArmazenamento::class, LaravelStorageService::class);
-
         // USE CASES
         $this->app->bind(
             ProcessarIptuDamUseCase::class,
             fn ($app) => new ProcessarIptuDamUseCase(
                 $app->make(TributarioIptuDamRepository::class),
+                $app->make(GestoraInfoBancariaRepository::class),
                 $app->make(BancoDoBrasilGateway::class),
                 $app->make(Mpdf::class),
                 $app->make(LaravelStorageService::class),

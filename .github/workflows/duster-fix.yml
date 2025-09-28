@@ -4,8 +4,6 @@ name: Duster Fix
 # Checkout Duster's documentation for a workaround
 
 on:
-    push:
-        branches: [ main ]
     pull_request:
 
 jobs:

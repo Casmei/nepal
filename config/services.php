@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'dados_bancarios' => [
+        'bb' => [
+            'pix_txid_secret' => env('BB_PIX_TXID_SECRET'),
+            'access_token' => env('BB_ACCESS_TOKEN'),
+        ],
+    ],
+
 ];

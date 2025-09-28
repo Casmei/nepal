@@ -20,7 +20,7 @@ class ProcessarIptuDamJob implements ShouldQueue
 
     public function handle(ProcessarIptuDamUseCase $useCase): void
     {
-        Log::info('Iniciando o processamento do IPTU', ['id' => $this->iptuDamId]);
+        Log::info('Iniciando job para o processamento do IPTU', ['id' => $this->iptuDamId]);
 
         $useCase->execute($this->iptuDamId);
     }

@@ -22,6 +22,9 @@ class IptuController
 
         $this->processarIptuDamLoteUseCase->execute($request['ids']);
 
+        // Descomentar para testes sem fila.
+        // $this->processarIptuDamUseCase->execute($request['ids'][0]);
+
         return response()->json([
             'message' => 'Processing request was accepted and enqueued.',
             'status' => 'accepted',

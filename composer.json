@@ -61,7 +61,9 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
-        ]
+        ],
+        "lint": ["./vendor/bin/duster lint"],
+        "fix": ["./vendor/bin/duster fix"]
     },
     "extra": {
         "laravel": {
