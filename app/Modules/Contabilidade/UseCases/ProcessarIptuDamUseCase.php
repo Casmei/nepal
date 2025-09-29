@@ -26,16 +26,18 @@ class ProcessarIptuDamUseCase
 
     ) {}
 
-    public function execute(int $iptuDamId): void
+    public function execute(int $iptuDamId, $gestoraId): void
     {
-        // todo: Esse gestora id deve ser pego do JWT enviado na requisição do Sigafi para o Nepal
-        $gestoraId = 54;
         $iptuDam = $this->iptuDamRepository->findOneById($iptuDamId);
-        $gestoraInfoBancarias = $this->gestoraInfoBancariaRepository->findOneByGestoraId($gestoraId);
-
         if (! $iptuDam) {
             Log::warning('IPTU DAM não encontrado', ['iptuDamId' => $iptuDamId]);
             throw new DomainException("IPTU DAM com ID {$iptuDamId} não encontrado.");
+        }
+
+        $gestoraInfoBancarias = $this->gestoraInfoBancariaRepository->findOneByGestoraId($gestoraId);
+        if (!$gestoraInfoBancarias) {
+            Log::warning('Informações bancárias da gestora não encontradas', ['dadosBancariosId' => $gestoraInfoBancarias->id, 'gestoraId' => $gestoraId]);
+            throw new DomainException("Informações bancárias da gestora com ID {$gestoraId} não encontrado.");
         }
 
         // todo: melhorar essas atualizações, pois são duas conexões ao banco para atualizar a mesma entidade;
@@ -48,7 +50,8 @@ class ProcessarIptuDamUseCase
                 'mensagem' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            throw $e; // opcional, se quiser propagar
+            // A minha queue vai pegar esse erro e jogar para a tabela job_fails
+            throw $e;
         }
     }
 

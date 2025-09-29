@@ -20,10 +20,11 @@ class IptuController
     {
         $request = $request->validated();
 
-        // $this->processarIptuDamLoteUseCase->execute($request['ids']);
+        // todo: Esse gestora id deve ser pego do JWT enviado na requisição do Sigafi para o Nepal
+        $this->processarIptuDamLoteUseCase->execute($request['ids'], 54);
 
         // Descomentar para testes sem fila.
-        $this->processarIptuDamUseCase->execute($request['ids'][0]);
+        // $this->processarIptuDamUseCase->execute($request['ids'][0], 54);
 
         return response()->json([
             'message' => 'Processing request was accepted and enqueued.',

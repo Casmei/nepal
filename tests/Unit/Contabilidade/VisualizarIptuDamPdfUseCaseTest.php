@@ -7,6 +7,7 @@ use App\Modules\Contracts\ContratoArmazenamento;
 use App\Modules\Contracts\ContratoPdfGerador;
 use DomainException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Factories\IptuDamDtoFactory;
 use Tests\Fakes\TributarioIptuDamRepositoryFake;
 
@@ -20,8 +21,10 @@ class VisualizarIptuDamPdfUseCaseTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
+        // Usamos Fakes para simular o comportamento de repositórios (estado)
         $this->repository = new TributarioIptuDamRepositoryFake;
+
+        // Usamos Mocks para verificar interações com serviços externos (comportamento)
         $this->documentoGerador = $this->createMock(ContratoPdfGerador::class);
         $this->armazenamento = $this->createMock(ContratoArmazenamento::class);
 
@@ -32,9 +35,6 @@ class VisualizarIptuDamPdfUseCaseTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function deve_retornar_caminho_quando_iptu_dam_existe(): void
     {
@@ -57,9 +57,6 @@ class VisualizarIptuDamPdfUseCaseTest extends TestCase
         $this->assertEquals('/storage/caminho/arquivo.pdf', $result);
     }
 
-    /**
-     * @test
-     */
     #[Test]
     public function deve_lancar_excecao_quando_iptu_dam_nao_existe(): void
     {

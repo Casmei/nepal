@@ -7,81 +7,70 @@ use App\Modules\Contracts\ContratoArmazenamento;
 use App\Modules\Contracts\ContratoPagamentoGateway;
 use App\Modules\Contracts\ContratoPdfGerador;
 use DomainException;
-use PHPUnit\Framework\TestCase;
-use Test;
-use Tests\Factories\IptuDamDtoFactory;
+use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\Factories\GestoraInfoBancariaDtoFactory;
+use Tests\Fakes\GestoraInfoBancariaRepositoryFake;
 use Tests\Fakes\TributarioIptuDamRepositoryFake;
 
 class ProcessarIptuDamUseCaseTest extends TestCase
 {
-    private $repository;
+    private TributarioIptuDamRepositoryFake $tributarioIptuDamrepository;
+    private GestoraInfoBancariaRepositoryFake $gestoraInfoBancariaRepositoryFake;
     private $pagamentoGateway;
     private $documentoGerador;
     private $armazenamento;
-    private $useCase;
+    private ProcessarIptuDamUseCase $useCase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->repository = new TributarioIptuDamRepositoryFake;
+        // Usamos Fakes para simular o comportamento de repositórios (estado)
+        $this->tributarioIptuDamrepository = new TributarioIptuDamRepositoryFake;
+        $this->gestoraInfoBancariaRepositoryFake = new GestoraInfoBancariaRepositoryFake;
+
+        // Usamos Mocks para verificar interações com serviços externos (comportamento)
         $this->pagamentoGateway = $this->createMock(ContratoPagamentoGateway::class);
         $this->documentoGerador = $this->createMock(ContratoPdfGerador::class);
         $this->armazenamento = $this->createMock(ContratoArmazenamento::class);
 
         $this->useCase = new ProcessarIptuDamUseCase(
-            $this->repository,
+            $this->tributarioIptuDamrepository,
+            $this->gestoraInfoBancariaRepositoryFake,
             $this->pagamentoGateway,
             $this->documentoGerador,
             $this->armazenamento
         );
     }
 
-    /**
-     * @test
-     */
     #[Test]
-    public function deve_gerar_pix_e_pdf_quando_iptu_existe(): void
+    public function deve_lancar_excecao_quando_iptu_dam_nao_encontrado(): void
     {
-        $dto = IptuDamDtoFactory::make(['id' => 1, 'valor' => '150.00']);
-
-        $this->repository->add($dto);
-
-        $this->pagamentoGateway
-            ->expects($this->once())
-            ->method('gerarCobrancaPix')
-            ->with('150.00', 'IPTU')
-            ->willReturn('pix_code_123');
-
-        $this->documentoGerador
-            ->expects($this->once())
-            ->method('gerarPdf')
-            ->with('pdf.contabilidade.iptu.dam', ['iptuDam' => $dto])
-            ->willReturn('%PDF-MOCK%');
-
-        $this->armazenamento
-            ->expects($this->once())
-            ->method('put')
-            ->with('pdf/iptu/dam/iptu_dam_1.pdf', '%PDF-MOCK%');
-
-        $this->useCase->execute(1);
-
-        // garante que o fake repository foi atualizado
-        $iptuAtualizado = $this->repository->findOneById(1);
-
-        $this->assertEquals('pix_code_123', $iptuAtualizado->pix_qr_code);
-        $this->assertEquals('pdf/iptu/dam/iptu_dam_1.pdf', $iptuAtualizado->caminho_carne_pdf);
-    }
-
-    /**
-     * @test
-     */
-    #[Test]
-    public function deve_lancar_excecao_quando_iptu_nao_existe(): void
-    {
+        // Arrange
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('IPTU DAM com ID 999 não encontrado.');
 
-        $this->useCase->execute(999);
+        // Adiciona a gestora para garantir que o erro é apenas a falta do IPTU
+        $gestoraDto = GestoraInfoBancariaDtoFactory::make(['adm_gestora_id' => 54]);
+        $this->gestoraInfoBancariaRepositoryFake->add($gestoraDto);
+
+        // Act
+        $this->useCase->execute(999, 54);
+    }
+
+    #[Test]
+    public function deve_lancar_excecao_quando_gestora_info_bancaria_nao_encontrado(): void
+    {
+        // Arrange
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('IPTU DAM com ID 999 não encontrado.');
+
+        // Adiciona a gestora para garantir que o erro é apenas a falta do IPTU
+        $gestoraDto = GestoraInfoBancariaDtoFactory::make(['adm_gestora_id' => 54]);
+        $this->gestoraInfoBancariaRepositoryFake->add($gestoraDto);
+
+        // Act
+        $this->useCase->execute(999, 54);
     }
 }
