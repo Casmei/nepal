@@ -19,11 +19,11 @@ class VisualizarIptuDamPdfUseCase
     {
         $iptuDam = $this->repository->findOneById($iptuDamId);
 
-        if (!$iptuDam) {
+        if (! $iptuDam) {
             throw new DomainException("IPTU DAM com ID {$iptuDamId} não encontrado.");
         }
 
-        if (!isset($iptuDam->caminho_carne_pdf)) {
+        if (! isset($iptuDam->caminho_carne_pdf)) {
             throw new DomainException("IPTU DAM carnê com ID {$iptuDamId} não encontrado.");
         }
 

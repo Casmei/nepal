@@ -7,8 +7,8 @@ use App\Modules\Contabilidade\Repositories\Contratos\ContratoTributarioIptuDamRe
 use App\Modules\Contracts\ContratoArmazenamento;
 use App\Modules\Contracts\ContratoPagamentoGateway;
 use App\Modules\Contracts\ContratoPdfGerador;
-use App\Modules\Contracts\DTOs\PagamentoGatewayConfigDto;
 use App\Modules\Contracts\DTOs\GerarCobrancaPixComVencimentoDto;
+use App\Modules\Contracts\DTOs\PagamentoGatewayConfigDto;
 use App\Modules\Gestora\DTOs\GestoraInfoBancariaDto;
 use App\Modules\Gestora\Repositories\Contratos\ContratoGestoraInfoBancariaRepository;
 use DomainException;
@@ -86,8 +86,7 @@ class ProcessarIptuDamUseCase
             $gestoraInfoBancariaDto->client_secret,
             $gestoraInfoBancariaDto->developer_application_key,
             $gestoraInfoBancariaDto->gerarTokenDeAcesso(),
-            // todo: mudar isso depois com base nos dados que vem do banco
-            'homolog',
+            $gestoraInfoBancariaDto->ambiente,
             $gestoraInfoBancariaDto->chave_pix
         );
 
